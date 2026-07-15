@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Index — Every AI Tool, Filed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0b0e14;
+    --panel: #12161f;
+    --panel-2: #171c27;
+    --border: #232a38;
+    --text: #edeef0;
+    --muted: #8b93a3;
+    --amber: #e8a33d;
+    --teal: #3ec9b0;
+    --radius: 3px;
+    --e1: 0 1px 0 rgba(255,255,255,0.03) inset, 0 2px 4px rgba(0,0,0,0.35), 0 8px 18px rgba(0,0,0,0.28);
+    --e2: 0 1px 0 rgba(255,255,255,0.04) inset, 0 4px 10px rgba(0,0,0,0.4), 0 18px 34px rgba(0,0,0,0.35);
+    --e3: 0 1px 0 rgba(255,255,255,0.05) inset, 0 8px 18px rgba(0,0,0,0.45), 0 30px 55px rgba(0,0,0,0.45);
+    --inset: inset 0 2px 5px rgba(0,0,0,0.5), inset 0 -1px 0 rgba(255,255,255,0.02);
+  }
+  *{ box-sizing: border-box; margin:0; padding:0; }
+  html{ scroll-behavior: smooth; }
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    perspective: 1400px;
+    overflow-x: hidden;
+  }
+  body::before{
+    content:'';
+    position: fixed; inset:0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 64px 64px;
+    opacity: 0.12;
+    pointer-events: none;
+    z-index: 0;
+    animation: gridDrift 40s linear infinite;
+  }
+  @keyframes gridDrift{
+    0%{ background-position: 0 0; }
+    100%{ background-position: 64px 64px; }
+  }
+  .glow-orb{
+    position: fixed; border-radius: 50%; filter: blur(90px);
+    pointer-events: none; z-index:0; opacity:0.35;
+  }
+  .glow-orb.o1{ width: 520px; height:520px; top:-180px; left:-120px; background: var(--amber); animation: floatA 18s ease-in-out infinite; }
+  .glow-orb.o2{ width: 460px; height:460px; top: 400px; right:-160px; background: var(--teal); animation: floatB 22s ease-in-out infinite; }
+  .glow-orb.o3{ width: 380px; height:380px; bottom:-160px; left:30%; background: #6a5fd8; opacity:0.22; animation: floatA 26s ease-in-out infinite reverse; }
+  @keyframes floatA{
+    0%,100%{ transform: translate(0,0) scale(1); }
+    50%{ transform: translate(40px,60px) scale(1.12); }
+  }
+  @keyframes floatB{
+    0%,100%{ transform: translate(0,0) scale(1); }
+    50%{ transform: translate(-50px,-30px) scale(1.08); }
+  }
+  @keyframes fadeUp{
+    from{ opacity:0; transform: translateY(22px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+  @keyframes popIn{
+    from{ opacity:0; transform: translateY(16px) rotateX(8deg) scale(0.96); }
+    to{ opacity:1; transform: translateY(0) rotateX(0) scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+  }
+  a{ color: inherit; text-decoration: none; }
+  h1,h2,h3{ font-family: 'Space Grotesk', sans-serif; }
+  .mono{ font-family: 'IBM Plex Mono', monospace; }
+
+  /* ---- Header ---- */
+  header{
+    position: sticky; top:0; z-index: 50;
+    background: rgba(11,14,20,0.88);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--e1);
+  }
+  .header-inner{
+    max-width: 1160px; margin: 0 auto;
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 18px 24px;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand-mark{
+    width:28px; height:28px; border:1.5px solid var(--amber);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono'; font-size:11px; color:var(--amber);
+    background: linear-gradient(155deg, rgba(232,163,61,0.16), rgba(232,163,61,0.02));
+    box-shadow: var(--e1), 0 0 14px rgba(232,163,61,0.18);
+    transform-style: preserve-3d;
+    transition: transform .3s ease;
+  }
+  .brand:hover .brand-mark{ transform: rotateY(180deg); }
+  .brand-name{ font-weight:600; font-size:17px; letter-spacing:-0.01em; }
+  .brand-name span{ color: var(--muted); font-weight:500; }
+  nav.top-links{ display:flex; gap:6px; font-size:13.5px; color:var(--muted); perspective: 400px; }
+  nav.top-links a{
+    padding: 7px 12px; border:1px solid transparent; border-radius: 2px;
+    transition: transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
+    display:inline-block; transform-style: preserve-3d;
+  }
+  nav.top-links a:hover{
+    color: var(--text);
+    background: var(--panel);
+    border-color: var(--border);
+    box-shadow: var(--e1);
+    transform: translateY(-2px) rotateX(8deg);
+  }
+  @media (max-width: 720px){ nav.top-links{ display:none; } }
+
+  /* ---- Hero ---- */
+  .hero{
+    max-width: 1160px; margin: 0 auto;
+    padding: 84px 24px 56px;
+    position: relative; z-index:1;
+    transform-style: preserve-3d;
+  }
+  .hero-eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'IBM Plex Mono'; font-size:12px; color:var(--teal);
+    border:1px solid rgba(62,201,176,0.3); background: rgba(62,201,176,0.06);
+    padding: 5px 10px; margin-bottom: 26px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-eyebrow .dot{ width:6px; height:6px; background:var(--teal); border-radius:50%; box-shadow: 0 0 10px var(--teal); animation: pulseDot 1.6s ease-in-out infinite; }
+  @keyframes pulseDot{ 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:0.5; transform:scale(1.3); } }
+  h1.hero-title{
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.02;
+    max-width: 780px;
+    animation: fadeUp 0.7s ease 0.08s both;
+    text-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  }
+  h1.hero-title em{
+    font-style: normal; color: var(--amber);
+    text-shadow: 0 0 40px rgba(232,163,61,0.35);
+  }
+  .hero-sub{
+    max-width: 560px;
+    color: var(--muted);
+    font-size: 16.5px;
+    margin-top: 22px;
+    animation: fadeUp 0.7s ease 0.16s both;
+  }
+  .hero-count{
+    margin-top: 34px;
+    display:flex; gap: 36px; flex-wrap: wrap;
+    animation: fadeUp 0.7s ease 0.24s both;
+  }
+  .hero-count div{ font-family:'IBM Plex Mono'; }
+  .hero-count .num{ font-size: 26px; color: var(--text); font-weight:500; }
+  .hero-count .lbl{ font-size: 11.5px; color: var(--muted); letter-spacing:0.04em; text-transform:uppercase; }
+
+  .hero-scene{
+    position:absolute; top: 20px; right: 10px; width: 340px; height: 360px;
+    z-index:0; display:none; transform-style: preserve-3d;
+    animation: sceneFloat 8s ease-in-out infinite;
+  }
+  @media (min-width: 980px){ .hero-scene{ display:block; } }
+  @keyframes sceneFloat{
+    0%,100%{ transform: rotateX(10deg) rotateY(-18deg) translateY(0); }
+    50%{ transform: rotateX(14deg) rotateY(-24deg) translateY(-14px); }
+  }
+  .hero-scene .deck-card{
+    position:absolute; width: 230px; height: 108px; left: 60px;
+    border: 1px solid var(--border);
+    background: linear-gradient(155deg, var(--panel), var(--panel-2));
+    box-shadow: var(--e3);
+    padding: 14px 16px 14px 22px;
+    display:flex; flex-direction:column; justify-content:center; gap:6px;
+  }
+  .hero-scene .deck-card::before{
+    content:''; position:absolute; left:0; top:12px; bottom:12px; width:6px;
+    box-shadow: 0 0 10px currentColor;
+  }
+  .hero-scene .d1{ top:20px; transform: translateZ(10px) rotate(-2deg); opacity:0.75; }
+  .hero-scene .d1::before{ background: #6a5fd8; color:#6a5fd8; }
+  .hero-scene .d2{ top:96px; transform: translateZ(55px) rotate(1.5deg); opacity:0.9; }
+  .hero-scene .d2::before{ background: var(--teal); color: var(--teal); }
+  .hero-scene .d3{ top:172px; transform: translateZ(100px) rotate(-1deg); }
+  .hero-scene .d3::before{ background: var(--amber); color: var(--amber); }
+  .hero-scene .deck-line{ height:8px; background: rgba(255,255,255,0.08); border-radius:1px; }
+  .hero-scene .deck-line.short{ width:55%; }
+  .hero-scene .deck-line.tiny{ width:35%; height:6px; background: rgba(232,163,61,0.35); }
+  .hero-scene .deck-check{
+    position:absolute; width:46px; height:46px; border-radius:50%;
+    background: var(--amber); top:150px; left:250px;
+    transform: translateZ(130px);
+    box-shadow: var(--e3), 0 0 30px rgba(232,163,61,0.5);
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* ---- Search + filter bar ---- */
+  .search-bar{
+    max-width: 1160px; margin: 0 auto; padding: 0 24px 8px;
+    position: relative; z-index: 2;
+    display:flex; gap: 10px; flex-wrap: wrap;
+  }
+  .search-input-wrap{
+    flex: 1 1 320px; position: relative;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    box-shadow: var(--inset);
+    transition: box-shadow .2s ease, border-color .2s ease;
+  }
+  .search-input-wrap:focus-within{
+    border-color: var(--amber);
+    box-shadow: var(--inset), 0 0 0 3px rgba(232,163,61,0.12);
+  }
+  .search-input-wrap svg{ position:absolute; left:14px; top:50%; transform:translateY(-50%); opacity:0.5; }
+  #search{
+    width:100%; background: transparent; border:none; outline:none;
+    color: var(--text); font-family:'Inter'; font-size: 14.5px;
+    padding: 14px 14px 14px 40px;
+  }
+  #search::placeholder{ color: var(--muted); }
+  .chip-row{ display:flex; gap:8px; flex-wrap: wrap; align-items:center; perspective: 400px; }
+  .chip{
+    font-family:'IBM Plex Mono'; font-size: 12px; color: var(--muted);
+    border: 1px solid var(--border); background: var(--panel);
+    padding: 9px 13px; cursor:pointer; white-space:nowrap;
+    box-shadow: var(--e1);
+    transition: transform .15s ease, box-shadow .15s ease, color .15s ease, border-color .15s ease, background .15s ease;
+    transform-style: preserve-3d;
+  }
+  .chip:hover{ color: var(--text); border-color:#3a4254; transform: translateY(-2px); box-shadow: var(--e2); }
+  .chip:active{ transform: translateY(1px); box-shadow: var(--inset); }
+  .chip.active{
+    color: var(--bg); background: var(--amber); border-color: var(--amber);
+    box-shadow: var(--e2), 0 0 20px rgba(232,163,61,0.35);
+    transform: translateY(-1px);
+  }
+
+  /* ---- Directory ---- */
+  main{ max-width: 1160px; margin: 0 auto; padding: 40px 24px 100px; position:relative; z-index:1; }
+
+  .category-block{ margin-top: 56px; scroll-margin-top: 150px; opacity:0; transform: translateY(30px); transition: opacity .6s ease, transform .6s ease; }
+  .category-block.revealed{ opacity:1; transform:translateY(0); }
+  .category-head{
+    display:flex; align-items: baseline; gap: 14px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 14px; margin-bottom: 22px;
+  }
+  .category-code{
+    font-family:'IBM Plex Mono'; font-size: 12px; color: var(--amber);
+    border: 1px solid rgba(232,163,61,0.35);
+    padding: 3px 7px;
+    background: linear-gradient(160deg, rgba(232,163,61,0.14), rgba(232,163,61,0.02));
+    box-shadow: var(--e1); transition: box-shadow .3s ease, transform .3s ease;
+    display: inline-block;
+  }
+  .category-block.revealed .category-code{ box-shadow: var(--e1), 0 0 16px rgba(232,163,61,0.25); }
+  .category-head h2{ font-size: 21px; font-weight: 600; letter-spacing: -0.01em; }
+  .category-desc{ color: var(--muted); font-size: 13px; margin-left: auto; text-align:right; max-width: 340px; display:none; }
+  @media (min-width: 860px){ .category-desc{ display:block; } }
+
+  .card-grid{
+    display:grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 14px;
+    perspective: 900px;
+  }
+
+  .tool-card{
+    position: relative;
+    background: linear-gradient(155deg, var(--panel), var(--panel-2));
+    border: 1px solid var(--border);
+    padding: 20px 18px 18px 24px;
+    box-shadow: var(--e1);
+    transition: transform .12s ease, box-shadow .2s ease, border-color .2s ease;
+    display:flex; flex-direction:column; gap:10px;
+    transform-style: preserve-3d;
+    will-change: transform;
+    animation: popIn 0.5s ease both;
+  }
+  .tool-card:hover{
+    border-color: var(--amber);
+    box-shadow: var(--e3), 0 0 0 1px rgba(232,163,61,0.15);
+    z-index: 5;
+  }
+  .tool-card::before{
+    content:'';
+    position:absolute; left:0; top:14px; bottom:14px; width:5px;
+    background: linear-gradient(180deg, var(--teal), #2a9c88);
+    box-shadow: 0 0 12px rgba(62,201,176,0.5), inset 1px 0 0 rgba(255,255,255,0.25);
+    transform: translateZ(10px);
+  }
+  .tool-card::after{
+    content:'';
+    position:absolute; inset:0;
+    background: radial-gradient(240px circle at var(--mx,50%) var(--my,50%), rgba(232,163,61,0.10), transparent 60%);
+    opacity:0; transition: opacity .3s ease;
+    pointer-events:none;
+  }
+  .tool-card:hover::after{ opacity:1; }
+  .tool-card .tool-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; transform: translateZ(24px); }
+  .tool-name{ font-weight:600; font-size: 15.5px; }
+  .tool-tag{
+    font-family:'IBM Plex Mono'; font-size:10.5px; color: var(--muted);
+    border:1px solid var(--border); padding:2px 6px; white-space:nowrap;
+    background: rgba(255,255,255,0.02);
+    box-shadow: var(--inset);
+  }
+  .tool-desc{ color: var(--muted); font-size: 13px; flex:1; transform: translateZ(14px); }
+  .tool-open{
+    display:flex; align-items:center; gap:6px;
+    font-family:'IBM Plex Mono'; font-size:12px; color: var(--amber);
+    margin-top: 4px; transform: translateZ(30px);
+  }
+  .tool-open svg{ transition: transform .15s ease; }
+  .tool-card:hover .tool-open svg{ transform: translate(3px,-3px); }
+
+  .no-results{
+    display:none; text-align:center; padding: 80px 20px; color: var(--muted);
+    font-family:'IBM Plex Mono'; font-size: 13px;
+  }
+
+  footer{
+    border-top: 1px solid var(--border);
+    padding: 34px 24px; position:relative; z-index:1;
+  }
+  .footer-inner{
+    max-width:1160px; margin:0 auto; display:flex; justify-content:space-between;
+    flex-wrap:wrap; gap:12px; color: var(--muted); font-size: 12.5px;
+  }
+  .footer-inner span.amber{ color: var(--amber); }
+</style>
+</head>
+<body>
+<div class="glow-orb o1"></div>
+<div class="glow-orb o2"></div>
+<div class="glow-orb o3"></div>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-mark">Ai</div>
+      <div class="brand-name">The Index <span>/ ai tools filed by task</span></div>
+    </div>
+    <nav class="top-links">
+      <a href="#chat">Chat</a>
+      <a href="#image">Image</a>
+      <a href="#video">Video</a>
+      <a href="#audio">Audio</a>
+      <a href="#code">Code</a>
+      <a href="#writing">Writing</a>
+      <a href="#productivity">Productivity</a>
+      <a href="#design">Design</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-eyebrow"><span class="dot"></span> 32 TOOLS · 8 CATEGORIES · UPDATED JUL 2026</div>
+  <h1 class="hero-title">Stop bookmarking AI tools. <em>Find them by what you're trying to do.</em></h1>
+  <p class="hero-sub">Every tool here is filed under the job it does, not the company that made it. Search by task, open the one you need, get back to work.</p>
+  <div class="hero-count">
+    <div><div class="num" id="statCat">08</div><div class="lbl">Categories</div></div>
+    <div><div class="num" id="statTools">32</div><div class="lbl">Tools indexed</div></div>
+    <div><div class="num">00</div><div class="lbl">Ads or trackers</div></div>
+  </div>
+  <div class="hero-scene">
+    <div class="deck-card d1">
+      <div class="deck-line short"></div>
+      <div class="deck-line tiny"></div>
+    </div>
+    <div class="deck-card d2">
+      <div class="deck-line short"></div>
+      <div class="deck-line tiny"></div>
+    </div>
+    <div class="deck-card d3">
+      <div class="deck-line short"></div>
+      <div class="deck-line tiny"></div>
+    </div>
+    <div class="deck-check">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0b0e14" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+    </div>
+  </div>
+</section>
+
+<div class="search-bar">
+  <div class="search-input-wrap">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    <input id="search" type="text" placeholder="Search by tool name, or what you're trying to do (e.g. 'voiceover', 'resume')...">
+  </div>
+  <div class="chip-row" id="chipRow">
+    <div class="chip active" data-filter="all">All</div>
+  </div>
+</div>
+
+<main id="main">
+  <!-- categories injected by JS -->
+  <div class="no-results" id="noResults">— NO MATCHES FILED UNDER THAT SEARCH —<br><br>try a broader term, like a task ("write", "voice", "meeting") instead of a brand name.</div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div>The Index — a directory, not a product. We don't host or run any of these AIs.</div>
+    <div><span class="amber">Note:</span> availability, pricing, and free-tier limits change often — check each tool's own site before relying on it.</div>
+  </div>
+</footer>
+
+<script>
+const DATA = [
+  { id:'chat', code:'CH', name:'Chat & Reasoning', desc:'General-purpose conversation, research, and problem-solving.',
+    tools:[
+      {name:'ChatGPT', tag:'openai', desc:'General chat assistant with browsing, image, and voice modes.', url:'https://chat.openai.com'},
+      {name:'Claude', tag:'anthropic', desc:'Conversational assistant built for careful reasoning and long documents.', url:'https://claude.ai'},
+      {name:'Gemini', tag:'google', desc:'Google\'s assistant, integrated across Search, Docs, and Android.', url:'https://gemini.google.com'},
+      {name:'Perplexity', tag:'perplexity ai', desc:'Answers questions with cited, up-to-date web sources.', url:'https://www.perplexity.ai'},
+      {name:'Meta AI', tag:'meta', desc:'Assistant built into Instagram, WhatsApp, and Messenger.', url:'https://www.meta.ai'},
+      {name:'Grok', tag:'xai', desc:'Conversational assistant integrated into X, tuned for real-time topics.', url:'https://grok.com'},
+      {name:'Mistral Le Chat', tag:'mistral ai', desc:'Fast, open-weight-backed chat assistant from a European lab.', url:'https://chat.mistral.ai'},
+      {name:'Poe', tag:'quora', desc:'One subscription, one interface for many different chat models.', url:'https://poe.com'},
+      {name:'Pi', tag:'inflection ai', desc:'Warmer, more personal-feeling everyday conversation assistant.', url:'https://pi.ai'},
+      {name:'Character.AI', tag:'character.ai', desc:'Chat with custom or fictional AI personas and characters.', url:'https://character.ai'},
+      {name:'DeepSeek Chat', tag:'deepseek', desc:'Open-weight-backed reasoning assistant known for strong math and code.', url:'https://chat.deepseek.com'},
+      {name:'Qwen Chat', tag:'alibaba', desc:'Multilingual assistant from Alibaba\'s open Qwen model family.', url:'https://chat.qwen.ai'},
+      {name:'You.com', tag:'you.com', desc:'Chat assistant built around live web search and app integrations.', url:'https://you.com'},
+      {name:'Phind', tag:'phind', desc:'Developer-focused search and chat assistant tuned for technical questions.', url:'https://www.phind.com'},
+    ]},
+  { id:'image', code:'IM', name:'Image Generation', desc:'Text-to-image, editing, and brand-safe visual generation.',
+    tools:[
+      {name:'Midjourney', tag:'midjourney', desc:'High-fidelity, stylized image generation via prompts.', url:'https://www.midjourney.com'},
+      {name:'DALL·E 3', tag:'openai', desc:'Prompt-to-image generation built into ChatGPT.', url:'https://openai.com/dall-e-3'},
+      {name:'Stable Diffusion', tag:'stability ai', desc:'Open-weight image model, run hosted or locally.', url:'https://stability.ai'},
+      {name:'Adobe Firefly', tag:'adobe', desc:'Commercially-safe generative image tools inside Creative Cloud.', url:'https://www.adobe.com/products/firefly.html'},
+      {name:'Ideogram', tag:'ideogram', desc:'Image generation known for rendering accurate in-image text.', url:'https://ideogram.ai'},
+      {name:'Leonardo AI', tag:'leonardo', desc:'Fine-tuned models for game art, concept art, and product shots.', url:'https://leonardo.ai'},
+      {name:'Recraft', tag:'recraft', desc:'Vector, icon, and brand-consistent image generation.', url:'https://www.recraft.ai'},
+      {name:'Playground', tag:'playground', desc:'Free-form canvas for prompting, editing, and compositing images.', url:'https://playground.com'},
+      {name:'Flux', tag:'black forest labs', desc:'Fast, high-detail open-weight image model family.', url:'https://blackforestlabs.ai'},
+      {name:'Krea', tag:'krea', desc:'Real-time image generation and upscaling as you sketch or type.', url:'https://www.krea.ai'},
+      {name:'Magnific', tag:'magnific ai', desc:'Upscales and adds photorealistic detail to existing images.', url:'https://magnific.ai'},
+      {name:'Clipdrop', tag:'stability ai', desc:'Toolbox of quick image utilities: relight, cleanup, background swap.', url:'https://clipdrop.co'},
+      {name:'Freepik AI', tag:'freepik', desc:'Stock-asset library with built-in text-to-image generation.', url:'https://www.freepik.com/ai'},
+      {name:'NightCafe', tag:'nightcafe', desc:'Community-driven image generation with many style presets.', url:'https://creator.nightcafe.studio'},
+    ]},
+  { id:'video', code:'VD', name:'Video Generation', desc:'Text-to-video, avatars, and AI-edited footage.',
+    tools:[
+      {name:'Runway', tag:'runway', desc:'Text-to-video generation and AI-assisted video editing.', url:'https://runwayml.com'},
+      {name:'Pika', tag:'pika labs', desc:'Fast text- and image-to-video clip generation.', url:'https://pika.art'},
+      {name:'Sora', tag:'openai', desc:'Text-to-video model for short, high-detail cinematic clips.', url:'https://openai.com/sora'},
+      {name:'Synthesia', tag:'synthesia', desc:'AI presenter avatars for training and explainer videos.', url:'https://www.synthesia.io'},
+      {name:'Luma Dream Machine', tag:'luma ai', desc:'Text- and image-to-video with realistic motion.', url:'https://lumalabs.ai/dream-machine'},
+      {name:'HeyGen', tag:'heygen', desc:'AI avatars and voice dubbing for multilingual video.', url:'https://www.heygen.com'},
+      {name:'Kling', tag:'kuaishou', desc:'High-resolution text-to-video with long-form shot support.', url:'https://klingai.com'},
+      {name:'Descript', tag:'descript', desc:'Edits video by editing its transcript, plus AI voice cleanup.', url:'https://www.descript.com'},
+      {name:'Pictory', tag:'pictory', desc:'Turns long articles or scripts into short branded video clips.', url:'https://pictory.ai'},
+      {name:'Opus Clip', tag:'opus', desc:'Auto-cuts long videos into short, highlight-ready social clips.', url:'https://www.opus.pro'},
+      {name:'Colossyan', tag:'colossyan', desc:'AI avatar video creation aimed at corporate training content.', url:'https://www.colossyan.com'},
+      {name:'Veed.io', tag:'veed', desc:'Browser-based video editor with AI subtitles, avatars, and voice.', url:'https://www.veed.io'},
+      {name:'Wondershare Filmora AI', tag:'wondershare', desc:'Consumer video editor with AI script-to-video and effects.', url:'https://filmora.wondershare.com'},
+      {name:'Steve AI', tag:'steve ai', desc:'Turns scripts or blog posts into animated or live-action videos.', url:'https://www.steve.ai'},
+    ]},
+  { id:'audio', code:'AU', name:'Audio & Music', desc:'Voice cloning, narration, and full song generation.',
+    tools:[
+      {name:'ElevenLabs', tag:'elevenlabs', desc:'Realistic voice cloning and text-to-speech narration.', url:'https://elevenlabs.io'},
+      {name:'Suno', tag:'suno', desc:'Generates full songs, vocals included, from a text prompt.', url:'https://suno.com'},
+      {name:'Udio', tag:'udio', desc:'Prompt-based music generation with editable stems.', url:'https://www.udio.com'},
+      {name:'Murf.ai', tag:'murf', desc:'Studio-style voiceovers for presentations and video.', url:'https://murf.ai'},
+      {name:'Play.ht', tag:'play.ht', desc:'Text-to-speech API with a large library of natural voices.', url:'https://play.ht'},
+      {name:'AIVA', tag:'aiva', desc:'Composes original instrumental scores for media and games.', url:'https://www.aiva.ai'},
+      {name:'Adobe Podcast', tag:'adobe', desc:'Cleans up recorded speech and removes background noise.', url:'https://podcast.adobe.com'},
+      {name:'LALAL.AI', tag:'lalal.ai', desc:'Splits songs into isolated vocal and instrument stems.', url:'https://www.lalal.ai'},
+      {name:'Krisp', tag:'krisp', desc:'Removes background noise and echo from calls in real time.', url:'https://krisp.ai'},
+      {name:'Splash Pro', tag:'splash', desc:'Generates royalty-free background music from a text mood prompt.', url:'https://splashmusic.com'},
+      {name:'WellSaid Labs', tag:'wellsaid', desc:'Licensed, brand-safe synthetic voices for enterprise narration.', url:'https://wellsaidlabs.com'},
+      {name:'Boomy', tag:'boomy', desc:'Generates original songs instantly and can distribute them to streaming.', url:'https://boomy.com'},
+      {name:'Podcastle', tag:'podcastle', desc:'AI recording, editing, and voice cleanup built for podcasters.', url:'https://podcastle.ai'},
+      {name:'Descript Overdub', tag:'descript', desc:'Clones your own voice so text edits sound spoken, not synthetic.', url:'https://www.descript.com/overdub'},
+    ]},
+  { id:'code', code:'CD', name:'Code & Development', desc:'In-editor pair programming and autonomous coding agents.',
+    tools:[
+      {name:'GitHub Copilot', tag:'github', desc:'Inline code completion and chat inside your editor.', url:'https://github.com/features/copilot'},
+      {name:'Cursor', tag:'cursor', desc:'AI-native code editor built around fast multi-file edits.', url:'https://www.cursor.com'},
+      {name:'Claude Code', tag:'anthropic', desc:'Agentic coding in the terminal, editor, or desktop app.', url:'https://claude.com/product/claude-code'},
+      {name:'Replit', tag:'replit', desc:'Browser-based coding with an AI agent that builds full apps.', url:'https://replit.com'},
+      {name:'v0', tag:'vercel', desc:'Generates React UI components from a text or image prompt.', url:'https://v0.dev'},
+      {name:'Windsurf', tag:'windsurf', desc:'Agentic IDE that plans and executes multi-step coding tasks.', url:'https://windsurf.com'},
+      {name:'Codeium', tag:'codeium', desc:'Free AI autocomplete and chat across dozens of IDEs.', url:'https://codeium.com'},
+      {name:'Lovable', tag:'lovable', desc:'Prompt-to-full-stack-app builder for non-engineers.', url:'https://lovable.dev'},
+      {name:'Bolt.new', tag:'stackblitz', desc:'Builds and runs full web apps directly in the browser from a prompt.', url:'https://bolt.new'},
+      {name:'Tabnine', tag:'tabnine', desc:'Privacy-focused code completion that can run fully on-premises.', url:'https://www.tabnine.com'},
+      {name:'Sourcegraph Cody', tag:'sourcegraph', desc:'Codebase-aware AI chat that understands large existing repos.', url:'https://sourcegraph.com/cody'},
+      {name:'Devin', tag:'cognition', desc:'Autonomous software engineer agent that plans and ships whole tasks.', url:'https://devin.ai'},
+      {name:'Amazon Q Developer', tag:'aws', desc:'AWS-integrated coding assistant for building and migrating apps.', url:'https://aws.amazon.com/q/developer/'},
+      {name:'Cline', tag:'cline', desc:'Open-source autonomous coding agent that runs inside VS Code.', url:'https://cline.bot'},
+    ]},
+  { id:'writing', code:'WR', name:'Writing & Content', desc:'Drafting, editing, and long-form copy at scale.',
+    tools:[
+      {name:'Jasper', tag:'jasper', desc:'Marketing copy generation with brand voice controls.', url:'https://www.jasper.ai'},
+      {name:'Copy.ai', tag:'copy.ai', desc:'Short-form marketing and ad copy templates.', url:'https://www.copy.ai'},
+      {name:'Grammarly', tag:'grammarly', desc:'Grammar, tone, and clarity editing as you type.', url:'https://www.grammarly.com'},
+      {name:'Sudowrite', tag:'sudowrite', desc:'Fiction-focused drafting and brainstorming assistant.', url:'https://www.sudowrite.com'},
+      {name:'QuillBot', tag:'quillbot', desc:'Paraphrasing, summarizing, and grammar checking in one tool.', url:'https://quillbot.com'},
+      {name:'Writesonic', tag:'writesonic', desc:'Long-form articles and SEO content generation.', url:'https://writesonic.com'},
+      {name:'Wordtune', tag:'ai21 labs', desc:'Rewrites sentences for tone, length, and clarity on the fly.', url:'https://www.wordtune.com'},
+      {name:'Rytr', tag:'rytr', desc:'Budget-friendly copywriting assistant for short-form content.', url:'https://rytr.me'},
+      {name:'Hemingway Editor', tag:'hemingway', desc:'Flags dense, hard-to-read sentences and suggests simpler ones.', url:'https://hemingwayapp.com'},
+      {name:'Sapling', tag:'sapling', desc:'Grammar and phrasing suggestions built for support and sales teams.', url:'https://sapling.ai'},
+      {name:'Anyword', tag:'anyword', desc:'Predicts and scores which version of your copy will perform best.', url:'https://www.anyword.com'},
+      {name:'Novelcrafter', tag:'novelcrafter', desc:'Organizes long fiction projects alongside AI drafting assistance.', url:'https://www.novelcrafter.com'},
+      {name:'ProWritingAid', tag:'prowritingaid', desc:'In-depth style, grammar, and readability reports for long manuscripts.', url:'https://prowritingaid.com'},
+      {name:'Paperpal', tag:'paperpal', desc:'Academic writing and language checks tuned for journal submissions.', url:'https://paperpal.com'},
+    ]},
+  { id:'productivity', code:'PR', name:'Productivity & Research', desc:'Notes, meetings, docs, and source-grounded research.',
+    tools:[
+      {name:'Notion AI', tag:'notion', desc:'Writing, summarizing, and Q&A built into your Notion docs.', url:'https://www.notion.so/product/ai'},
+      {name:'Otter.ai', tag:'otter.ai', desc:'Live meeting transcription with automatic summaries.', url:'https://otter.ai'},
+      {name:'Gamma', tag:'gamma', desc:'Turns an outline or prompt into a formatted slide deck.', url:'https://gamma.app'},
+      {name:'NotebookLM', tag:'google', desc:'Q&A and audio overviews grounded in your own uploaded sources.', url:'https://notebooklm.google'},
+      {name:'Fireflies.ai', tag:'fireflies', desc:'Records, transcribes, and searches across all your meetings.', url:'https://fireflies.ai'},
+      {name:'Reclaim.ai', tag:'reclaim', desc:'Auto-schedules focus time and tasks around existing meetings.', url:'https://reclaim.ai'},
+      {name:'Elicit', tag:'elicit', desc:'Searches and summarizes findings across academic papers.', url:'https://elicit.com'},
+      {name:'Motion', tag:'motion', desc:'AI project and calendar manager that plans your day automatically.', url:'https://www.usemotion.com'},
+      {name:'Mem', tag:'mem', desc:'Self-organizing notes app that surfaces related notes automatically.', url:'https://mem.ai'},
+      {name:'Consensus', tag:'consensus', desc:'Search engine that pulls sourced answers from scientific studies.', url:'https://consensus.app'},
+      {name:'Rewind', tag:'rewind ai', desc:'Searches everything you\'ve seen or said on your own device.', url:'https://www.rewind.ai'},
+      {name:'Clockwise', tag:'clockwise', desc:'Optimizes team calendars automatically to protect focus time.', url:'https://www.getclockwise.com'},
+      {name:'Reflect', tag:'reflect', desc:'Networked notes app with an AI assistant built into every page.', url:'https://reflect.app'},
+      {name:'Krisp Meeting Assistant', tag:'krisp', desc:'Transcribes and summarizes meetings alongside noise cancellation.', url:'https://krisp.ai/meeting-assistant'},
+    ]},
+  { id:'design', code:'DS', name:'Design & Visual', desc:'Layout, branding, and interface generation.',
+    tools:[
+      {name:'Canva Magic Studio', tag:'canva', desc:'AI-assisted design, backgrounds, and copy inside Canva.', url:'https://www.canva.com/magic-studio/'},
+      {name:'Figma AI', tag:'figma', desc:'AI layout and asset generation inside Figma files.', url:'https://www.figma.com/ai/'},
+      {name:'Framer AI', tag:'framer', desc:'Prompt-to-website generation with editable components.', url:'https://www.framer.com/ai'},
+      {name:'Looka', tag:'looka', desc:'Logo and brand kit generation from a few prompts.', url:'https://looka.com'},
+      {name:'Uizard', tag:'uizard', desc:'Turns sketches or prompts into editable app/web mockups.', url:'https://uizard.io'},
+      {name:'Galileo AI', tag:'galileo', desc:'Generates polished, ready-to-edit UI screens from text.', url:'https://www.usegalileo.ai'},
+      {name:'Khroma', tag:'khroma', desc:'Learns your color taste and generates matching palettes.', url:'https://www.khroma.co'},
+      {name:'Remove.bg', tag:'remove.bg', desc:'One-click background removal for product and portrait photos.', url:'https://www.remove.bg'},
+      {name:'Designs.ai', tag:'designs.ai', desc:'All-in-one generator for logos, banners, and short videos.', url:'https://designs.ai'},
+      {name:'Brandmark', tag:'brandmark', desc:'Generates full brand identity packages, not just a single logo.', url:'https://brandmark.io'},
+      {name:'Visily', tag:'visily', desc:'Converts screenshots or sketches into editable wireframes.', url:'https://www.visily.ai'},
+      {name:'Photoroom', tag:'photoroom', desc:'Product photo editing and background generation for e-commerce.', url:'https://www.photoroom.com'},
+      {name:'Beautiful.ai', tag:'beautiful.ai', desc:'Slide design tool that auto-formats layouts as you type content.', url:'https://www.beautiful.ai'},
+      {name:'Autodraw', tag:'google', desc:'Turns rough sketches into clean icon-style drawings instantly.', url:'https://www.autodraw.com'},
+    ]},
+  { id:'3d', code:'3D', name:'3D & Avatars', desc:'Generative 3D models, avatars, and virtual world assets.',
+    tools:[
+      {name:'Meshy', tag:'meshy ai', desc:'Generates textured 3D models from text or reference images.', url:'https://www.meshy.ai'},
+      {name:'Luma Genie', tag:'luma ai', desc:'Turns a text prompt into a downloadable 3D asset.', url:'https://lumalabs.ai/genie'},
+      {name:'Ready Player Me', tag:'ready player me', desc:'Cross-app avatar creation for games and virtual spaces.', url:'https://readyplayer.me'},
+      {name:'Kaedim', tag:'kaedim', desc:'Converts 2D concept art into game-ready 3D models.', url:'https://www.kaedim3d.com'},
+      {name:'Spline AI', tag:'spline', desc:'Generates and edits 3D web scenes from text prompts.', url:'https://spline.design/ai'},
+      {name:'Move AI', tag:'move ai', desc:'Turns ordinary video into 3D motion-capture animation data.', url:'https://www.move.ai'},
+      {name:'Scenario', tag:'scenario', desc:'Trains custom generative models on your own game art style.', url:'https://www.scenario.com'},
+      {name:'Tripo AI', tag:'tripo', desc:'Fast text- or image-to-3D generation for game-ready assets.', url:'https://www.tripo3d.ai'},
+      {name:'Rodin', tag:'hyper3d', desc:'Generates production-ready 3D models with clean topology.', url:'https://hyper3d.ai'},
+    ]},
+  { id:'search', code:'SE', name:'Search & SEO', desc:'Content optimization, keyword research, and AI-answer visibility.',
+    tools:[
+      {name:'Surfer SEO', tag:'surfer', desc:'Scores and guides content edits against top-ranking pages.', url:'https://surferseo.com'},
+      {name:'Semrush AI', tag:'semrush', desc:'Keyword research and content planning with AI writing assist.', url:'https://www.semrush.com'},
+      {name:'Ahrefs AI', tag:'ahrefs', desc:'Backlink and keyword research with AI content summaries.', url:'https://ahrefs.com'},
+      {name:'Frase', tag:'frase', desc:'Builds SEO briefs and drafts from competing search results.', url:'https://www.frase.io'},
+      {name:'Clearscope', tag:'clearscope', desc:'Grades content against the terms top pages actually use.', url:'https://www.clearscope.io'},
+      {name:'Profound', tag:'profound', desc:'Tracks how often and how well your brand shows up in AI answers.', url:'https://www.tryprofound.com'},
+      {name:'MarketMuse', tag:'marketmuse', desc:'Audits an entire site\'s content for topical gaps and coverage.', url:'https://www.marketmuse.com'},
+      {name:'Exploding Topics', tag:'exploding topics', desc:'Surfaces fast-growing search trends before they peak.', url:'https://explodingtopics.com'},
+      {name:'Originality.ai', tag:'originality.ai', desc:'Detects AI-generated text and plagiarism before publishing.', url:'https://originality.ai'},
+    ]},
+  { id:'agents', code:'AG', name:'Automation & Agents', desc:'No-code workflows and autonomous multi-step task agents.',
+    tools:[
+      {name:'Zapier AI', tag:'zapier', desc:'Builds and describes automations between apps in plain English.', url:'https://zapier.com/ai'},
+      {name:'Make', tag:'make', desc:'Visual workflow automation across thousands of connected apps.', url:'https://www.make.com'},
+      {name:'n8n', tag:'n8n', desc:'Self-hostable, node-based automation with built-in AI steps.', url:'https://n8n.io'},
+      {name:'Manus', tag:'manus ai', desc:'General autonomous agent that plans and executes multi-step tasks.', url:'https://manus.im'},
+      {name:'Gumloop', tag:'gumloop', desc:'Drag-and-drop AI workflow builder for repetitive business tasks.', url:'https://www.gumloop.com'},
+      {name:'Relevance AI', tag:'relevance ai', desc:'Builds and deploys custom AI agents without writing code.', url:'https://relevanceai.com'},
+      {name:'Lindy', tag:'lindy', desc:'Builds personal AI assistants that handle email and calendar tasks.', url:'https://www.lindy.ai'},
+      {name:'Cognosys', tag:'cognosys', desc:'Autonomous research and task-completion agent from a single goal.', url:'https://www.cognosys.ai'},
+      {name:'Bardeen', tag:'bardeen', desc:'Browser automation that triggers AI workflows from any webpage.', url:'https://www.bardeen.ai'},
+    ]},
+  { id:'support', code:'CS', name:'Customer Support', desc:'AI chat agents, ticket triage, and help-center automation.',
+    tools:[
+      {name:'Intercom Fin', tag:'intercom', desc:'AI support agent that resolves tickets using your help docs.', url:'https://www.intercom.com/fin'},
+      {name:'Zendesk AI', tag:'zendesk', desc:'Auto-triages, summarizes, and drafts replies to support tickets.', url:'https://www.zendesk.com/service/ai/'},
+      {name:'Ada', tag:'ada', desc:'No-code AI customer service agent for chat and email.', url:'https://www.ada.cx'},
+      {name:'Crisp', tag:'crisp', desc:'Shared inbox and chat widget with built-in AI response drafting.', url:'https://crisp.chat'},
+      {name:'Forethought', tag:'forethought', desc:'Predicts ticket intent and automates routing and resolution.', url:'https://forethought.ai'},
+      {name:'Decagon', tag:'decagon', desc:'Custom AI support agents trained on your product and policies.', url:'https://decagon.ai'},
+      {name:'Tidio', tag:'tidio', desc:'Live chat widget with an AI agent for small business support.', url:'https://www.tidio.com'},
+    ]},
+  { id:'translation', code:'TR', name:'Translation & Language', desc:'Real-time translation, dubbing, and language learning.',
+    tools:[
+      {name:'DeepL', tag:'deepl', desc:'High-accuracy text translation across dozens of languages.', url:'https://www.deepl.com'},
+      {name:'Papercup', tag:'papercup', desc:'Dubs video into other languages with natural-sounding AI voices.', url:'https://www.papercup.com'},
+      {name:'Duolingo Max', tag:'duolingo', desc:'AI-powered explanations and roleplay practice in language lessons.', url:'https://www.duolingo.com/max'},
+      {name:'Speak', tag:'speak', desc:'AI conversation partner for practicing spoken language skills.', url:'https://www.speak.com'},
+      {name:'Wordly', tag:'wordly ai', desc:'Live speech translation and captioning for events and meetings.', url:'https://wordly.ai'},
+      {name:'Reverso', tag:'reverso', desc:'Translation with in-context examples pulled from real usage.', url:'https://www.reverso.net'},
+      {name:'Microsoft Translator', tag:'microsoft', desc:'Free real-time text and speech translation across many languages.', url:'https://www.microsoft.com/translator'},
+    ]},
+  { id:'data', code:'DA', name:'Data & Analytics', desc:'Natural-language querying, dashboards, and spreadsheet automation.',
+    tools:[
+      {name:'Julius AI', tag:'julius', desc:'Analyzes and charts spreadsheet data from plain-English questions.', url:'https://julius.ai'},
+      {name:'Akkio', tag:'akkio', desc:'No-code predictive models built directly from business data.', url:'https://www.akkio.com'},
+      {name:'Hex', tag:'hex', desc:'Notebook-style data analysis with an AI assistant for queries.', url:'https://hex.tech'},
+      {name:'MonkeyLearn', tag:'monkeylearn', desc:'Text analysis and classification without writing ML code.', url:'https://monkeylearn.com'},
+      {name:'Obviously AI', tag:'obviously ai', desc:'Builds and runs predictive models with zero code.', url:'https://www.obviously.ai'},
+      {name:'Tableau AI', tag:'tableau', desc:'Natural-language dashboard creation and insight summaries.', url:'https://www.tableau.com/products/tableau-ai'},
+      {name:'Rows AI', tag:'rows', desc:'Spreadsheet with built-in AI formulas and web data enrichment.', url:'https://rows.com'},
+    ]},
+  { id:'sales', code:'SL', name:'Sales & Email', desc:'Outbound prospecting, inbox drafting, and deal intelligence.',
+    tools:[
+      {name:'Superhuman AI', tag:'superhuman', desc:'AI-drafted replies and triage inside a fast email client.', url:'https://superhuman.com'},
+      {name:'Clay', tag:'clay', desc:'Enriches lead lists and personalizes outbound at scale.', url:'https://www.clay.com'},
+      {name:'Gong', tag:'gong', desc:'Analyzes sales calls for coaching and deal-risk signals.', url:'https://www.gong.io'},
+      {name:'Instantly', tag:'instantly', desc:'Cold email sending and AI-personalized outreach sequences.', url:'https://instantly.ai'},
+      {name:'Lavender', tag:'lavender', desc:'Scores and rewrites sales emails before you hit send.', url:'https://www.lavender.ai'},
+      {name:'Warmly', tag:'warmly', desc:'Identifies anonymous website visitors and flags sales-ready leads.', url:'https://warmly.ai'},
+      {name:'Regie.ai', tag:'regie.ai', desc:'Generates and sequences personalized outbound sales messaging.', url:'https://www.regie.ai'},
+    ]},
+  { id:'education', code:'ED', name:'Education & Learning', desc:'Tutoring, study aids, and personalized course generation.',
+    tools:[
+      {name:'Khanmigo', tag:'khan academy', desc:'AI tutor that guides students through problems step by step.', url:'https://www.khanacademy.org/khan-labs'},
+      {name:'Socratic', tag:'google', desc:'Snap a photo of homework and get an explained walkthrough.', url:'https://socratic.org'},
+      {name:'Quizlet Q-Chat', tag:'quizlet', desc:'Turns study sets into an interactive AI tutoring session.', url:'https://quizlet.com'},
+      {name:'Coursebox', tag:'coursebox', desc:'Generates full online courses from a topic or document.', url:'https://coursebox.ai'},
+      {name:'Gradescope', tag:'turnitin', desc:'AI-assisted grading and feedback for instructors at scale.', url:'https://www.gradescope.com'},
+      {name:'StudyFetch', tag:'studyfetch', desc:'Turns class materials into flashcards, quizzes, and summaries.', url:'https://studyfetch.com'},
+      {name:'Chegg Cheggmate', tag:'chegg', desc:'Study help assistant that walks through textbook-style problems.', url:'https://www.chegg.com'},
+    ]},
+  { id:'health', code:'HL', name:'Health & Wellness', desc:'Symptom triage, clinical documentation, and wellness coaching.',
+    tools:[
+      {name:'Ada Health', tag:'ada health', desc:'Symptom assessment app that suggests possible causes and next steps.', url:'https://ada.com'},
+      {name:'Nabla Copilot', tag:'nabla', desc:'Ambient AI scribe that drafts clinical notes during patient visits.', url:'https://www.nabla.com'},
+      {name:'Woebot', tag:'woebot health', desc:'AI-guided CBT-style chat for everyday mood support.', url:'https://woebothealth.com'},
+      {name:'Abridge', tag:'abridge', desc:'Converts doctor-patient conversations into structured medical notes.', url:'https://www.abridge.com'},
+      {name:'Whoop Coach', tag:'whoop', desc:'AI fitness and recovery coach built on wearable biometric data.', url:'https://www.whoop.com'},
+      {name:'Freed', tag:'freed', desc:'AI medical scribe that drafts clinical documentation from visits.', url:'https://www.getfreed.ai'},
+    ]},
+  { id:'slides', code:'PS', name:'Presentations & Slides', desc:'Prompt-to-deck generation and auto-formatted slide design.',
+    tools:[
+      {name:'Beautiful.ai', tag:'beautiful.ai', desc:'Slide design tool that auto-formats layouts as you type content.', url:'https://www.beautiful.ai'},
+      {name:'Tome', tag:'tome', desc:'Generates narrative slide decks and one-pagers from a prompt.', url:'https://tome.app'},
+      {name:'Pitch', tag:'pitch', desc:'Collaborative deck creation with AI-assisted layout suggestions.', url:'https://pitch.com'},
+      {name:'Decktopus', tag:'decktopus', desc:'Turns a topic into a ready-to-present deck with speaker notes.', url:'https://www.decktopus.com'},
+      {name:'Plus AI', tag:'plus ai', desc:'AI slide generation that works directly inside Google Slides.', url:'https://www.plusdocs.com'},
+    ]},
+  { id:'hr', code:'HR', name:'HR & Recruiting', desc:'Candidate sourcing, screening, and interview automation.',
+    tools:[
+      {name:'Paradox (Olivia)', tag:'paradox', desc:'Conversational AI assistant that screens and schedules candidates.', url:'https://www.paradox.ai'},
+      {name:'HireVue', tag:'hirevue', desc:'AI-assisted video interviewing and candidate assessment platform.', url:'https://www.hirevue.com'},
+      {name:'Textio', tag:'textio', desc:'Rewrites job postings to reduce bias and attract more applicants.', url:'https://textio.com'},
+      {name:'Eightfold AI', tag:'eightfold', desc:'Matches candidates to roles using skills-based AI matching.', url:'https://eightfold.ai'},
+      {name:'SeekOut', tag:'seekout', desc:'AI-powered sourcing search across a huge pool of public candidate data.', url:'https://www.seekout.com'},
+    ]},
+  { id:'legal', code:'LG', name:'Legal', desc:'Contract review, legal research, and document drafting.',
+    tools:[
+      {name:'Harvey', tag:'harvey', desc:'AI legal assistant for research, drafting, and contract analysis.', url:'https://www.harvey.ai'},
+      {name:'Spellbook', tag:'spellbook', desc:'Drafts and reviews contract language directly inside Word.', url:'https://www.spellbook.legal'},
+      {name:'Casetext CoCounsel', tag:'casetext', desc:'AI legal research assistant for case law and document review.', url:'https://casetext.com/cocounsel'},
+      {name:'Ironclad AI', tag:'ironclad', desc:'Contract lifecycle management with AI clause analysis.', url:'https://ironcladapp.com'},
+      {name:'DoNotPay', tag:'donotpay', desc:'Consumer-facing AI assistant for disputes, refunds, and paperwork.', url:'https://donotpay.com'},
+    ]},
+  { id:'finance', code:'FN', name:'Finance & Accounting', desc:'Bookkeeping automation, expense management, and financial analysis.',
+    tools:[
+      {name:'Vic.ai', tag:'vic.ai', desc:'Automates invoice processing and approvals for accounting teams.', url:'https://www.vic.ai'},
+      {name:'Digits', tag:'digits', desc:'Real-time bookkeeping with AI-generated financial insights.', url:'https://digits.com'},
+      {name:'Ramp', tag:'ramp', desc:'Corporate card and spend management with automated expense categorization.', url:'https://ramp.com'},
+      {name:'AlphaSense', tag:'alphasense', desc:'AI search across earnings calls, filings, and market research.', url:'https://www.alpha-sense.com'},
+      {name:'Truewind', tag:'truewind', desc:'AI-assisted bookkeeping and CFO reporting for startups.', url:'https://www.truewind.ai'},
+    ]},
+  { id:'gaming', code:'GM', name:'Gaming & NPCs', desc:'Conversational game characters and real-time voice interaction.',
+    tools:[
+      {name:'Inworld AI', tag:'inworld', desc:'Builds AI-driven NPCs with memory, voice, and personality.', url:'https://inworld.ai'},
+      {name:'Charisma.ai', tag:'charisma.ai', desc:'Creates branching, emotionally-aware conversations for games.', url:'https://charisma.ai'},
+      {name:'Convai', tag:'convai', desc:'Adds real-time conversational AI characters to 3D game engines.', url:'https://convai.com'},
+      {name:'NVIDIA ACE', tag:'nvidia', desc:'Real-time speech, animation, and dialogue for game character AI.', url:'https://www.nvidia.com/en-us/geforce/technologies/ace/'},
+    ]},
+  { id:'social', code:'SM', name:'Social Media Management', desc:'AI captioning, scheduling, and content repurposing for social.',
+    tools:[
+      {name:'Buffer AI Assistant', tag:'buffer', desc:'Drafts and schedules social posts across multiple platforms.', url:'https://buffer.com/ai-assistant'},
+      {name:'Hootsuite OwlyWriter', tag:'hootsuite', desc:'Generates captions and post ideas from a topic or old content.', url:'https://www.hootsuite.com/platform/owlywriter-ai'},
+      {name:'Ocoya', tag:'ocoya', desc:'AI captions, hashtags, and scheduling in one social toolkit.', url:'https://www.ocoya.com'},
+      {name:'Predis.ai', tag:'predis.ai', desc:'Turns a product link or prompt into ready social media posts.', url:'https://predis.ai'},
+    ]},
+  { id:'aisearch', code:'AS', name:'AI Search Engines', desc:'Search-first products that answer directly instead of listing links.',
+    tools:[
+      {name:'You.com', tag:'you.com', desc:'Search engine with an AI chat layer and app-style shortcuts.', url:'https://you.com'},
+      {name:'Kagi', tag:'kagi', desc:'Paid, ad-free search engine with built-in AI answer summaries.', url:'https://kagi.com'},
+      {name:'Andi', tag:'andi', desc:'Conversational search that answers in natural language, not links.', url:'https://andisearch.com'},
+      {name:'Komo', tag:'komo', desc:'AI search built around quick, cited conversational answers.', url:'https://komo.ai'},
+    ]},
+  { id:'voiceagents', code:'VA', name:'Voice Agents & Call Centers', desc:'AI phone agents for booking, support, and outbound calls.',
+    tools:[
+      {name:'Bland AI', tag:'bland ai', desc:'Builds AI phone agents that place and receive calls at scale.', url:'https://www.bland.ai'},
+      {name:'Vapi', tag:'vapi', desc:'Developer platform for building real-time voice AI agents.', url:'https://vapi.ai'},
+      {name:'Retell AI', tag:'retell ai', desc:'Low-latency conversational voice AI for customer-facing calls.', url:'https://www.retellai.com'},
+      {name:'Synthflow', tag:'synthflow', desc:'No-code builder for AI voice assistants and call automation.', url:'https://synthflow.ai'},
+    ]},
+  { id:'builders', code:'BD', name:'Website & App Builders', desc:'Prompt-to-website generation for non-developers.',
+    tools:[
+      {name:'Durable', tag:'durable', desc:'Generates a full small-business website in under a minute.', url:'https://durable.co'},
+      {name:'10Web', tag:'10web', desc:'AI-generated WordPress websites with built-in hosting.', url:'https://10web.io'},
+      {name:'Softr', tag:'softr', desc:'Turns spreadsheets into client portals and internal tools, no code.', url:'https://www.softr.io'},
+      {name:'Glide', tag:'glide', desc:'Builds mobile and web apps from data with AI-assisted layout.', url:'https://www.glideapps.com'},
+    ]},
+  { id:'career', code:'CR', name:'Career & Resume', desc:'Resume building, job matching, and interview preparation.',
+    tools:[
+      {name:'Teal', tag:'teal', desc:'Tracks job applications and tailors resumes with AI suggestions.', url:'https://www.tealhq.com'},
+      {name:'Kickresume', tag:'kickresume', desc:'AI resume and cover letter writer with ATS-friendly templates.', url:'https://www.kickresume.com'},
+      {name:'Rezi', tag:'rezi', desc:'Optimizes resumes against applicant tracking system scoring.', url:'https://www.rezi.ai'},
+      {name:'Huntr', tag:'huntr', desc:'Job search tracker with AI resume tailoring per application.', url:'https://huntr.co'},
+    ]},
+  { id:'infra', code:'IN', name:'AI Infrastructure & Models', desc:'Model hosting, inference APIs, and open-model access.',
+    tools:[
+      {name:'Hugging Face', tag:'hugging face', desc:'Hub for open-source models, datasets, and hosted inference.', url:'https://huggingface.co'},
+      {name:'Replicate', tag:'replicate', desc:'Runs open-source AI models in the cloud via a simple API.', url:'https://replicate.com'},
+      {name:'Together AI', tag:'together ai', desc:'Fast, cost-efficient hosted inference for open-weight models.', url:'https://www.together.ai'},
+      {name:'Groq', tag:'groq', desc:'Ultra-low-latency inference hardware and API for open models.', url:'https://groq.com'},
+      {name:'OpenRouter', tag:'openrouter', desc:'Single API that routes requests across many different AI models.', url:'https://openrouter.ai'},
+    ]},
+];
+
+const main = document.getElementById('main');
+const noResults = document.getElementById('noResults');
+const chipRow = document.getElementById('chipRow');
+
+const totalTools = DATA.reduce((sum, c) => sum + c.tools.length, 0);
+document.getElementById('statTools').textContent = String(totalTools).padStart(2,'0');
+document.getElementById('statCat').textContent = String(DATA.length).padStart(2,'0');
+
+DATA.forEach(cat=>{
+  const chip = document.createElement('div');
+  chip.className = 'chip';
+  chip.dataset.filter = cat.id;
+  chip.textContent = cat.name;
+  chipRow.appendChild(chip);
+});
+
+function attachTilt(card){
+  card.addEventListener('mousemove', (e)=>{
+    const r = card.getBoundingClientRect();
+    const x = e.clientX - r.left, y = e.clientY - r.top;
+    const rx = ((y / r.height) - 0.5) * -14;
+    const ry = ((x / r.width) - 0.5) * 14;
+    card.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px) scale(1.02)`;
+    card.style.setProperty('--mx', x + 'px');
+    card.style.setProperty('--my', y + 'px');
+  });
+  card.addEventListener('mouseleave', ()=>{
+    card.style.transform = '';
+  });
+}
+
+function render(){
+  main.querySelectorAll('.category-block').forEach(el=>el.remove());
+
+  DATA.forEach(cat=>{
+    const block = document.createElement('div');
+    block.className = 'category-block';
+    block.id = cat.id;
+    block.dataset.cat = cat.id;
+
+    const head = document.createElement('div');
+    head.className = 'category-head';
+    head.innerHTML = `<span class="category-code">${cat.code}</span><h2>${cat.name}</h2><span class="category-desc">${cat.desc}</span>`;
+    block.appendChild(head);
+
+    const grid = document.createElement('div');
+    grid.className = 'card-grid';
+
+    cat.tools.forEach((t, i)=>{
+      const card = document.createElement('a');
+      card.href = t.url;
+      card.target = '_blank';
+      card.rel = 'noopener noreferrer';
+      card.className = 'tool-card';
+      card.style.animationDelay = (i * 0.05) + 's';
+      card.dataset.search = (t.name + ' ' + t.tag + ' ' + t.desc + ' ' + cat.name).toLowerCase();
+      card.dataset.tab = `${cat.code}-${String(i+1).padStart(2,'0')}`;
+      card.innerHTML = `
+        <div class="tool-top">
+          <div class="tool-name">${t.name}</div>
+          <div class="tool-tag">${t.tag}</div>
+        </div>
+        <div class="tool-desc">${t.desc}</div>
+        <div class="tool-open">OPEN
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17 17 7M7 7h10v10"/></svg>
+        </div>`;
+      attachTilt(card);
+      grid.appendChild(card);
+    });
+
+    block.appendChild(grid);
+    main.insertBefore(block, noResults);
+  });
+  applyFilters();
+  observeReveal();
+}
+
+let activeCategory = 'all';
+let query = '';
+
+function applyFilters(){
+  let visibleCount = 0;
+  document.querySelectorAll('.category-block').forEach(block=>{
+    const catMatch = activeCategory === 'all' || block.dataset.cat === activeCategory;
+    let anyCardVisible = false;
+    block.querySelectorAll('.tool-card').forEach(card=>{
+      const textMatch = query === '' || card.dataset.search.includes(query);
+      const show = catMatch && textMatch;
+      card.style.display = show ? '' : 'none';
+      if(show){ anyCardVisible = true; visibleCount++; }
+    });
+    block.style.display = anyCardVisible ? '' : 'none';
+  });
+  noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+}
+
+function observeReveal(){
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('revealed');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.category-block').forEach(b=> io.observe(b));
+}
+
+document.getElementById('search').addEventListener('input', (e)=>{
+  query = e.target.value.trim().toLowerCase();
+  applyFilters();
+});
+
+chipRow.addEventListener('click', (e)=>{
+  const chip = e.target.closest('.chip');
+  if(!chip) return;
+  chipRow.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  chip.classList.add('active');
+  activeCategory = chip.dataset.filter;
+  applyFilters();
+});
+
+// subtle parallax on hero scene following cursor
+const scene = document.querySelector('.hero-scene');
+if(scene){
+  document.addEventListener('mousemove', (e)=>{
+    const x = (e.clientX / window.innerWidth - 0.5) * 20;
+    const y = (e.clientY / window.innerHeight - 0.5) * 20;
+    scene.style.transform = `rotateX(${10 - y}deg) rotateY(${-18 + x}deg)`;
+  });
+}
+
+// scroll parallax on background glow orbs for depth while scrolling
+const orbs = document.querySelectorAll('.glow-orb');
+let lastScroll = 0;
+window.addEventListener('scroll', ()=>{
+  lastScroll = window.scrollY;
+  requestAnimationFrame(()=>{
+    orbs.forEach((orb, i)=>{
+      const speed = 0.08 + i * 0.05;
+      orb.style.transform = `translateY(${lastScroll * speed}px)`;
+    });
+  });
+});
+
+render();
+</script>
+
+</body>
+</html>
